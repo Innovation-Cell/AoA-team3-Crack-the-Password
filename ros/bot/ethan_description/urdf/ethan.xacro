@@ -1,0 +1,561 @@
+<?xml version="1.0"?>
+<robot name="ethan" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:property name="pi" value="3.1415" />
+  <xacro:property name="camera_link" value="0.05" /> <!-- Size of square 'camera' box -->
+  <xacro:property name="length" value="0.4" />
+  <xacro:property name="width" value="0.4" />
+  <xacro:property name="height" value="0.005" />
+  <xacro:property name="arm_l" value="0.13" />
+  <xacro:property name="arm_r" value="0.01" />
+  <xacro:property name="arm2_mass" value="0.2" />
+  <xacro:property name="arm2_l" value="0.09" />
+  <xacro:property name="arm2_r" value="0.01" />
+  <xacro:property name="arm_mass" value="0.2" />
+  <xacro:property name="disc_l" value="0.04" />
+  <xacro:property name="disc_r" value="0.04" />
+  <xacro:property name="disc_mass" value="0.2" />
+  <xacro:property name="holder_l" value="0.01" />
+  <xacro:property name="holder_r" value="0.01" />
+  <xacro:property name="holder_mass" value="0.2" />
+  <xacro:property name="mass" value="80" />
+  <xacro:property name="hinge_r" value="0.02" />
+  <xacro:property name="hinge_l" value="0.01" />
+  <xacro:property name="hinge_mass" value="0.2" />
+  <xacro:include filename="$(find ethan_description)/urdf/macro.xacro" />
+  <xacro:include filename="$(find ethan_description)/urdf/gazebo.xacro" />
+  <xacro:property name="wheel_mass" value="5" />
+  <xacro:property name="wheel_radius" value="0.05" />
+  <xacro:property name="wheel_length" value="0.03" />
+  <xacro:property name="upper_mass" value="0.2" />
+
+  <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+    </inertial>
+  </xacro:macro>
+
+
+  <link name="link_chassis">
+   <!-- pose and inertial -->
+   <pose>0 0 0.5 0 0 0</pose>
+   <inertial>
+    <mass value="${mass}" />
+    <inertia ixx="${mass*(width*width + height*height)/12}" ixy="0.0" ixz="0.0" iyy="${mass*(width*width + height*height)/12}" iyz="0.0" izz="${mass*(width*width + length*length)/12}" />
+  </inertial>
+
+  <collision name="collision_chassis">
+    <geometry>
+      <box size="${length} ${width} ${height}"/>
+    </geometry>
+  </collision>
+  <visual name="visual_chassis">
+    <geometry>
+      <box size="${length} ${width} ${height}"/>
+    </geometry>
+  </visual>>
+
+</link>
+
+
+
+
+<xacro:link_wheel name="link_right_wheel_front" mass="${wheel_mass}" r="${wheel_radius}" l="${wheel_length}" />
+<xacro:link_wheel name="link_left_wheel_front" mass="${wheel_mass}" r="${wheel_radius}" l="${wheel_length}"/>  
+<xacro:link_wheel name="link_right_wheel_back" mass="${wheel_mass}" r="${wheel_radius}" l="${wheel_length}" />
+<xacro:link_wheel name="link_left_wheel_back" mass="${wheel_mass}" r="${wheel_radius}" l="${wheel_length}"/>  
+<xacro:joint_wheel name="joint_right_wheel_front"  child="link_right_wheel_front"  origin_xyz="0.17 0.195 -0.0525"  />
+<xacro:joint_wheel name="joint_left_wheel_front"   child="link_left_wheel_front"   origin_xyz="0.17 -0.195 -0.0525"  />
+<xacro:joint_wheel name="joint_right_wheel_back"  child="link_right_wheel_back"  origin_xyz="-0.17 0.195 -0.0525"  />
+<xacro:joint_wheel name="joint_left_wheel_back"   child="link_left_wheel_back"   origin_xyz="-0.17 -0.195 -0.0525"  />
+<!-- <xacro:transmission trans="link_left_wheel_front_trans" motor="link_left_wheel_front_motor" joint="joint_left_wheel_front"  /> -->
+
+
+
+
+<!-- 
+
+
+
+<link name="left_scissor_hinge_front">
+  <inertial>
+   <mass value="0.2"/>
+   <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+   <inertia ixx="${hinge_mass*(3*hinge_r*hinge_r+ hinge_l*hinge_l)/12}" ixy = "0" ixz = "0" iyy="${hinge_mass*(3*hinge_r*hinge_r+hinge_l*hinge_l)/12}" iyz = "0" izz="${hinge_mass*(hinge_r*hinge_r)/2}" />
+ </inertial>
+ <collision name="left_scissor_hinge_front_collision">
+  <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+  <geometry>
+    <cylinder length="${hinge_l}" radius="${hinge_r}"/>
+  </geometry>
+</collision>
+<visual name="left_scissor_hinge_front_visual">
+  <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+  <geometry>
+    <cylinder length="${hinge_l}" radius="${hinge_r}"/>
+  </geometry>
+</visual>
+</link>
+
+<joint name="left_scissor_hinge_front_joint" type="fixed">
+  <axis xyz="0 1 0" />
+  <origin xyz="0.14 0.195 0.0225" rpy="0 0 0"/>
+  <parent link="link_chassis"/>
+  <child link="left_scissor_hinge_front"/>
+</joint>
+
+
+<link name="left_scissor_hinge_back">
+  <inertial>
+   <mass value="0.2"/>
+   <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+   <inertia ixx="${hinge_mass*(3*hinge_r*hinge_r+ hinge_l*hinge_l)/12}" ixy = "0" ixz = "0" iyy="${hinge_mass*(3*hinge_r*hinge_r+hinge_l*hinge_l)/12}" iyz = "0" izz="${hinge_mass*(hinge_r*hinge_r)/2}" />
+ </inertial>
+ <collision name="left_scissor_hinge_back_back_collision">
+  <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+  <geometry>
+    <cylinder length="${hinge_l}" radius="${hinge_r}"/>
+  </geometry>
+</collision>
+<visual name="left_scissor_hinge_back_visual">
+  <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+  <geometry>
+    <cylinder length="${hinge_l}" radius="${hinge_r}"/>
+  </geometry>
+</visual>
+</link>
+
+<joint name="left_scissor_hinge_back_joint" type="prismatic">
+  <origin xyz="-0.14 0.195 0.0225" rpy="0.0 0.0 0.0"/>
+  <parent link="link_chassis" />
+  <child link="left_scissor_hinge_back" />
+  <axis xyz="1 0 0" />
+  <limit effort="10000" lower="0.0" upper="0.15" velocity="1" />
+</joint>
+
+
+
+
+<link name="right_scissor_hinge_front">
+  <inertial>
+   <mass value="0.2"/>
+   <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+   <inertia ixx="${hinge_mass*(3*hinge_r*hinge_r+ hinge_l*hinge_l)/12}" ixy = "0" ixz = "0" iyy="${hinge_mass*(3*hinge_r*hinge_r+hinge_l*hinge_l)/12}" iyz = "0" izz="${hinge_mass*(hinge_r*hinge_r)/2}" />
+ </inertial>
+ <collision name="right_scissor_hinge_front_collision">
+  <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+  <geometry>
+    <cylinder length="${hinge_l}" radius="${hinge_r}"/>
+  </geometry>
+</collision>
+<visual name="right_scissor_hinge_front_visual">
+  <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+  <geometry>
+    <cylinder length="${hinge_l}" radius="${hinge_r}"/>
+  </geometry>
+</visual>
+</link>
+
+<joint name="right_scissor_hinge_front_joint" type="fixed">
+  <axis xyz="0 1 0" />
+  <origin xyz="0.14 -0.195 0.0225" rpy="0 0 0"/>
+  <parent link="link_chassis"/>
+  <child link="right_scissor_hinge_front"/>
+</joint>
+
+
+<link name="right_scissor_hinge_back">
+  <inertial>
+   <mass value="0.2"/>
+   <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+   <inertia ixx="${hinge_mass*(3*hinge_r*hinge_r+ hinge_l*hinge_l)/12}" ixy = "0" ixz = "0" iyy="${hinge_mass*(3*hinge_r*hinge_r+hinge_l*hinge_l)/12}" iyz = "0" izz="${hinge_mass*(hinge_r*hinge_r)/2}" />
+ </inertial>
+ <collision name="right_scissor_hinge_back_back_collision">
+  <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+  <geometry>
+    <cylinder length="${hinge_l}" radius="${hinge_r}"/>
+  </geometry>
+</collision>
+<visual name="right_scissor_hinge_back_visual">
+  <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+  <geometry>
+    <cylinder length="${hinge_l}" radius="${hinge_r}"/>
+  </geometry>
+</visual>
+</link>
+
+<joint name="right_scissor_hinge_back_joint" type="prismatic">
+  <origin xyz="-0.14 -0.195 0.0225" rpy="0.0 0.0 0.0"/>
+  <parent link="link_chassis" />
+  <child link="right_scissor_hinge_back" />
+  <axis xyz="1 0 0" />
+  <limit effort="10000" lower="0.0" upper="0.15" velocity="1" />
+</joint> -->
+
+
+<link name="upper_platform">
+  <inertial>
+    <mass value="${upper_mass}" />
+    <inertia ixx="${upper_mass*(width*width + height*height)/12}" ixy="0.0" ixz="0.0" iyy="${upper_mass*(width*width + height*height)/12}" iyz="0.0" izz="${upper_mass*(width*width + length*length)/12}" />
+  </inertial>
+
+  <collision name="collision_chassis">
+    <geometry>
+      <box size="${length} ${width} ${height}"/>
+    </geometry>
+  </collision>
+
+  <visual>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <geometry>
+      <box size="${length} ${width} ${height}"/>
+    </geometry>
+    <material name="blue"/>
+  </visual>
+
+</link>
+
+<joint name="platform_joint" type="prismatic">
+  <origin xyz="0 0 0.1" rpy="0.0 0.0 0.0"/>
+  <parent link="link_chassis" />
+  <child link="upper_platform" />
+  <axis xyz="0 0 1" />
+  <limit effort="10000" lower="0" upper="0.80" velocity="1" />
+</joint>
+
+
+
+<link name="holder">
+  <inertial>
+    <mass value="0.2"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <inertia ixx="${holder_mass*(3*holder_r*holder_r+ holder_l*holder_l)/12}" ixy = "0" ixz = "0" iyy="${holder_mass*(3*holder_r*holder_r+holder_l*holder_l)/12}" iyz = "0" izz="${holder_mass*(holder_r*holder_r)/2}" />
+  </inertial>
+  <collision name="holder_collision">
+    <origin rpy="0 0 0" xyz="0 0 ${holder_l/2}"/>
+    <geometry>
+      <cylinder length="${holder_l}" radius="${ holder_r}"/>
+    </geometry>
+  </collision>
+  <visual name="disc_visual">
+    <origin rpy="0 0 0" xyz="0 0 ${holder_l/2}"/>
+    <geometry>
+      <cylinder length="${holder_l}" radius="${holder_r}"/>
+    </geometry>
+  </visual>
+</link>
+
+<joint name="holder_joint" type="revolute">
+  <origin xyz="0.2 0 ${holder_l/2}" rpy="0 0 0"/>
+  <parent link="upper_platform"/>
+  <child link="holder"/>
+  <axis xyz="0 0 1" />
+  <limit effort="3900" lower="-1.570796" upper="1.570796" velocity="1"/>
+</joint>
+
+<joint name="camera_joint" type="fixed">
+  <axis xyz="0 1 0" />
+  <origin xyz="0 0 ${holder_l/2 + camera_link/2 + 0.02}" rpy="0 0 0"/>
+  <parent link="holder"/>
+  <child link="camera_link"/>
+</joint>
+
+<!-- Camera -->
+<link name="camera_link">
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <box size="${camera_link/2} ${camera_link} ${camera_link/2}"/>
+    </geometry>
+  </collision>
+
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <box size="${camera_link/4} ${camera_link} ${camera_link/2}"/>
+    </geometry>
+    <material name="red"/>
+  </visual>
+
+  <inertial>
+    <mass value="1e-5" />
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+  </inertial>
+</link>
+
+
+
+
+<link name="disc">
+  <inertial>
+    <mass value="0.2"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <inertia ixx="${disc_mass*(3*disc_r*disc_r+ disc_l*disc_l)/12}" ixy = "0" ixz = "0" iyy="${disc_mass*(3*disc_r*disc_r+disc_l*disc_l)/12}" iyz = "0" izz="${disc_mass*(disc_r*disc_r)/2}" />
+  </inertial>
+  <collision name="arm1_collision">
+    <origin rpy="0 0 0" xyz="0 0 ${disc_l/2}"/>
+    <geometry>
+      <cylinder length="${disc_l}" radius="${ disc_r}"/>
+    </geometry>
+  </collision>
+  <visual name="disc_visual">
+    <origin rpy="0 0 0" xyz="0 0 ${disc_l/2}"/>
+    <geometry>
+      <cylinder length="${disc_l}" radius="${disc_r}"/>
+    </geometry>
+  </visual>
+</link>
+
+<joint name="disc_joint" type="revolute">
+  <origin xyz="0.12 0 0" rpy="0 0 0"/>
+  <parent link="upper_platform"/>
+  <child link="disc"/>
+  <axis xyz="0 0 1" />
+  <limit effort="3900" lower="-1.570796" upper="1.570796" velocity="1"/>
+</joint>
+
+
+<link name="arm1">
+  <inertial>
+    <mass value="0.2"/>
+    <origin rpy="0 0 0" xyz="0 0 ${arm_l/2}"/>
+    <inertia ixx="${arm_mass*(3*arm_r*arm_r+arm_l*arm_l)/12}" ixy = "0" ixz = "0" iyy="${arm_mass*(3*arm_r*arm_r+arm_l*arm_l)/12}" iyz = "0" izz="${arm_mass*(arm_r*arm_r)/2}" />
+  </inertial>
+  <collision name="arm1_collision">
+    <origin rpy="0 0 0" xyz="0 0 ${arm_l/2}"/>
+    <geometry>
+      <cylinder length="${arm_l}" radius="${arm_r}"/>
+    </geometry>
+  </collision>
+  <visual name="arm1_visual">
+    <origin rpy="0 0 0" xyz="0 0 ${arm_l/2}"/>
+    <geometry>
+      <cylinder length="${arm_l}" radius="${arm_r}"/>
+    </geometry>
+  </visual>
+</link>
+
+<joint name="arm1_joint" type="revolute">
+  <origin xyz="0 0 ${disc_l}" rpy="0 0 0"/>
+  <parent link="disc"/>
+  <child link="arm1"/>
+  <axis xyz="0 1 0" />
+  <limit effort="3900" lower="-1.570796" upper="1.570796" velocity="1"/>
+</joint>
+
+
+<link name="arm2">
+  <inertial>
+    <mass value="0.2"/>
+    <origin rpy="0 0 0" xyz="0 0 ${arm_l/2}"/>
+    <inertia ixx="${arm_mass*(3*arm_r*arm_r+arm_l*arm_l)/12}" ixy = "0" ixz = "0" iyy="${arm_mass*(3*arm_r*arm_r+arm_l*arm_l)/12}" iyz = "0" izz="${arm_mass*(arm_r*arm_r)/2}" />
+  </inertial>
+  <collision name="arm2_collision">
+    <origin rpy="0 0 0" xyz="0 0 ${arm_l/2}"/>
+    <geometry>
+      <cylinder length="${arm_l}" radius="${arm_r}"/>
+    </geometry>
+  </collision>
+  <visual name="arm2_visual">
+    <origin rpy="0 0 0" xyz="0 0 ${arm_l/2}"/>
+    <geometry>
+      <cylinder length="${arm_l}" radius="${arm_r}"/>
+    </geometry>
+  </visual>
+</link>
+
+<joint name="arm2_joint" type="revolute">
+  <origin xyz="0 0 ${arm_l}" rpy="0 0 0"/>
+  <parent link="arm1"/>
+  <child link="arm2"/>
+  <axis xyz="0 1 0" />
+  <limit effort="3900" lower="0" upper="3.14" velocity="1"/>
+
+
+</joint>
+
+
+
+
+<!-- Hokuyo Laser -->
+<link name="hokuyo_link">
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <box size="0.08 0.05 0.03"/>
+    </geometry>
+  </collision>
+
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://ethan_description/mesh/lds.stl" scale="0.001 0.001 0.001"/>
+      <box size="0.08 0.05 0.03"/>
+    </geometry>
+  </visual>
+
+  <inertial>
+    <mass value="1e-5" />
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+  </inertial>
+</link>
+
+<joint name="hokuyo_joint" type="fixed">
+  <axis xyz="0 1 0" />
+  <origin xyz="0.21 0 0.09" rpy="0 0 0"/>
+  <parent link="link_chassis"/>
+  <child link="hokuyo_link"/>
+</joint>
+
+
+
+<!-- <xacro:scissor_plate name="left_scissor_front_frist_plate"  mass="0.2"  l="0.02" w="0.005" h="0.3" />
+<xacro:joint_scissor name="left_scissor_front_frist_plate_joint"  child="left_scissor_front_frist_plate" parent="left_scissor_hinge_front"  origin_xyz="0 0 0 " />
+<xacro:scissor_plate name="left_scissor_front_second_plate"  mass="0.2"  l="0.02" w="0.005" h="0.3" />
+<xacro:joint_scissor name="left_scissor_front_second_plate_joint"  child="left_scissor_front_second_plate" parent="left_scissor__frist_plate"  origin_xyz="0 0 0.3 " />
+
+-->
+
+<transmission name="link_left_wheel_front_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <actuator name="link_left_wheel_front_motor">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+  <joint name="joint_left_wheel_front">
+    <hardwareInterface>VelocityJointInterface</hardwareInterface>
+  </joint>
+</transmission>
+
+<transmission name="link_left_wheel_back_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <actuator name="link_left_wheel_back_motor">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+  <joint name="joint_left_wheel_back">
+    <hardwareInterface>VelocityJointInterface</hardwareInterface>
+  </joint>
+</transmission>
+
+<transmission name="link_right_wheel_front_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <actuator name="link_right_wheel_front_motor">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+  <joint name="joint_right_wheel_front">
+    <hardwareInterface>VelocityJointInterface</hardwareInterface>
+  </joint>
+</transmission>
+
+<transmission name="link_right_wheel_back_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <actuator name="link_right_wheel_back_motor">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+  <joint name="joint_right_wheel_back">
+    <hardwareInterface>VelocityJointInterface</hardwareInterface>
+  </joint>
+</transmission>
+
+
+
+<transmission name="platform_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <actuator name="platform_extension_motor">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+  <joint name="platform_joint">
+    <hardwareInterface>PositionJointInterface</hardwareInterface>
+  </joint>
+</transmission>
+
+<transmission name="arm1_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <actuator name="arm1_motor">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+  <joint name="arm1_joint">
+    <hardwareInterface>PositionJointInterface</hardwareInterface>
+  </joint>
+</transmission>
+
+<transmission name="arm2_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <actuator name="arm2_motor">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+  <joint name="arm2_joint">
+    <hardwareInterface>PositionJointInterface</hardwareInterface>
+  </joint>
+</transmission>
+
+<transmission name="disc_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <actuator name="disc_motor">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+  <joint name="disc_joint">
+    <hardwareInterface>PositionJointInterface</hardwareInterface>
+  </joint>
+</transmission>
+
+<transmission name="holder_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <actuator name="holder_motor">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+  <joint name="holder_joint">
+    <hardwareInterface>PositionJointInterface</hardwareInterface>
+  </joint>
+</transmission>
+
+
+<gazebo reference="link_left_wheel_front">
+  <mu1 value="200.0"/>
+  <mu2 value="100.0"/>
+  <kp value="10000000.0" />
+  <kd value="1.0" />
+</gazebo>
+
+<gazebo reference="link_left_wheel_back">
+  <mu1 value="200.0"/>
+  <mu2 value="100.0"/>
+  <kp value="10000000.0" />
+  <kd value="1.0" />
+</gazebo>
+
+<gazebo reference="link_right_wheel_front">
+  <mu1 value="200.0"/>
+  <mu2 value="100.0"/>
+  <kp value="10000000.0" />
+  <kd value="1.0" />
+</gazebo>
+
+<gazebo reference="link_right_wheel_back">
+  <mu1 value="200.0"/>
+  <mu2 value="100.0"/>
+  <kp value="10000000.0" />
+  <kd value="1.0" />
+</gazebo>
+
+
+
+
+
+<gazebo>
+  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+    <robotNamespace>/</robotNamespace>
+    <odometryTopic>odom</odometryTopic>
+    <odometryFrame>odom</odometryFrame>
+    <robotBaseFrame>link_chassis</robotBaseFrame>
+  </plugin>
+</gazebo>
+
+
+
+
+
+
+</robot>

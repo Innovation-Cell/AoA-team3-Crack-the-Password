@@ -1,0 +1,17 @@
+material wall2/Diffuse
+{
+  receive_shadows off
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture wall2.png
+        filtering anistropic
+        max_anisotropy 16
+      }
+
+    }
+  }
+}

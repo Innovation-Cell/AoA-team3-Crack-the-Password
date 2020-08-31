@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find ethan_gazebo)/launch/gmapping.launch" />
+   <node pkg="ethan_description" type="odom_pub.py" name="odom_node"  output="screen"/>
+  <include file="$(find ethan_control)/launch/move_base.launch" />
+  <include file="$(find explore_lite)/launch/explore.launch" />
+  <node pkg="ethan_description" type="rest.py" name="rest_not"  output="screen">
+</launch>

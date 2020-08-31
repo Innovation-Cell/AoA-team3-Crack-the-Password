@@ -1,0 +1,7 @@
+type: "position_controllers/JointGroupPositionController"
+joints:
+ - platform_joint
+ - holder_joint
+ - arm1_joint
+ - arm2_joint
+ - disc_joint

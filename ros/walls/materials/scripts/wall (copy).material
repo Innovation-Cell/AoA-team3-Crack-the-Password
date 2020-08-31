@@ -1,0 +1,15 @@
+material BrickBox1/Diffuse
+{
+  receive_shadows off
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture w1.png
+      }
+      
+    }
+  }
+}

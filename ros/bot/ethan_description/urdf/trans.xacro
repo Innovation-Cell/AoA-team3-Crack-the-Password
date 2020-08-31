@@ -1,0 +1,39 @@
+<transmission name="link_left_wheel_front_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <actuator name="link_left_wheel_front_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <joint name="joint_left_wheel_front">
+        <hardwareInterface>VelocityJointInterface</hardwareInterface>
+      </joint>
+</transmission>
+
+<transmission name="link_left_wheel_back_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <actuator name="link_left_wheel_back_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <joint name="joint_left_wheel_back">
+        <hardwareInterface>VelocityJointInterface</hardwareInterface>
+      </joint>
+</transmission>
+
+<transmission name="link_right_wheel_front_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <actuator name="link_right_wheel_front_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <joint name="joint_right_wheel_front">
+        <hardwareInterface>VelocityJointInterface</hardwareInterface>
+      </joint>
+</transmission>
+
+<transmission name="link_right_wheel_back_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <actuator name="link_right_wheel_back_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+      <joint name="joint_right_wheel_back">
+        <hardwareInterface>VelocityJointInterface</hardwareInterface>
+      </joint>
+</transmission>

@@ -1,0 +1,15 @@
+material BrickBox2/Diffuse
+{
+  receive_shadows off
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture w2.png
+      }
+      
+    }
+  }
+}

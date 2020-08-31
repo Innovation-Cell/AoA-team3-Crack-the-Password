@@ -1,0 +1,57 @@
+  
+  
+
+  <link name="left_scissor_hinge_front">
+    <inertial>
+       <mass value="0.2"/>
+       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <inertia ixx="${hinge_mass*(3*hinge_r*hinge_r+ hinge_l*hinge_l)/12}" ixy = "0" ixz = "0" iyy="${hinge_mass*(3*hinge_r*hinge_r+hinge_l*hinge_l)/12}" iyz = "0" izz="${hinge_mass*(hinge_r*hinge_r)/2}" />
+    </inertial>
+    <collision name="link_right_wheel_front_collision">
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <geometry>
+        <cylinder length="${hinge_l}" radius="${hinge_r}"/>
+        </geometry>
+    </collision>
+    <visual name="left_scissor_hinge_front_visual">
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="${hinge_l}" radius="${hinge_r}"/>
+        </geometry>
+    </visual>
+  </link>
+
+  <joint name="left_scissor_hinge_front_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0.14 0.195 0.0225" rpy="0 0 0"/>
+    <parent link="link_chassis"/>
+    <child link="left_scissor_hinge_front"/>
+  </joint>
+
+
+   <link name="left_scissor_hinge_back">
+    <inertial>
+       <mass value="0.2"/>
+       <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <inertia ixx="${hinge_mass*(3*hinge_r*hinge_r+ hinge_l*hinge_l)/12}" ixy = "0" ixz = "0" iyy="${hinge_mass*(3*hinge_r*hinge_r+hinge_l*hinge_l)/12}" iyz = "0" izz="${hinge_mass*(hinge_r*hinge_r)/2}" />
+    </inertial>
+    <collision name="link_right_wheel_back_collision">
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <geometry>
+        <cylinder length="${hinge_l}" radius="${hinge_r}"/>
+        </geometry>
+    </collision>
+    <visual name="left_scissor_hinge_back_visual">
+        <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+        <geometry>
+          <cylinder length="${hinge_l}" radius="${hinge_r}"/>
+        </geometry>
+    </visual>
+  </link>
+
+  <joint name="left_scissor_hinge_back_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="-0.14 0.195 0.0225" rpy="0 0 0"/>
+    <parent link="link_chassis"/>
+    <child link="left_scissor_hinge_back"/>
+  </joint>
